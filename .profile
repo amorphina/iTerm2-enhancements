@@ -35,4 +35,20 @@ start_ssh(){
     /usr/bin/ssh ${ARGS}
 }
 
+refresh_prompt (){
+  BRANCH=$(git branch --show-current 2>/dev/null)
+  if ! [ -z "${BRANCH}" ];then
+    if [ "${BRANCH}" == "master" ];then
+      PS1GIT="\[\e[1m\]$(git config --get remote.origin.url)\[\e[0m\] \[\e[31m\]${BRANCH}\[\e[0m\] "
+    else
+      PS1GIT="\[\e[1m\]$(git config --get remote.origin.url)\[\e[0m\] \[\e[92m\]${BRANCH}\[\e[0m\] "
+    fi
+  else
+    PS1GIT=""
+  fi
+  PS1="\[\e[32m\]$(date +"%d %b %H:%M:%S")\[\e[0m\] \[\e[36m\]$(pwd)\[\e[0m\] ${PS1GIT}# "
+}
+
 alias ssh='start_ssh'
+
+PROMPT_COMMAND=refresh_prompt
